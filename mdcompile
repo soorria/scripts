@@ -1,0 +1,10 @@
+#!/bin/sh
+
+file="$1"
+base=${file%.*}
+
+echo "Compiling"
+
+pandoc $file -o $base.pdf
+
+echo "Done"

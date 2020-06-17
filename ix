@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# View by id
+[ -n "$1" ] && curl -s "ix.io/$1" && exit
+
+url=$(curl -s -F 'f:1=<-' http://ix.io)
+echo $url
+which xclip >/dev/null && (echo "$url" | xclip 2>/dev/null)
+
