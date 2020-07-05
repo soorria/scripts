@@ -1,0 +1,8 @@
+#!/bin/sh
+
+case $1 in
+  bar)        echo "\e[6 q";;
+  block)      echo "\e[2 q";;
+  underline)  echo "\e[4 q";;
+  *)          echo "Usage: cursor bar|block|underline";;
+esac

@@ -1,8 +1,8 @@
 #!/bin/bash
 
 usage() {
-  echo "Usage: $0 HEXCOLOR"
-  echo "    or $0 RED GREEN BLUE"
+  echo "Usage: ${0} HEXCOLOR"
+  echo "    or ${0} RED GREEN BLUE"
   exit 1
 }
 

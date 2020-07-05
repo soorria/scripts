@@ -1,0 +1,20 @@
+#!/bin/sh
+
+[ -z "${1}" ] && {
+  echo "Usage: ${0##*/} SCRIPT"
+  exit 1
+}
+
+file="${HOME}/repos/scripts/${1}"
+
+if [ ! -f "${file}" ]; then
+  touch "${file}"
+  chmod +x "${file}"
+fi
+
+$EDITOR "${file}"
+
+if [ ! -s "${file}" ]; then
+  rm "${file}" >/dev/null
+fi
+

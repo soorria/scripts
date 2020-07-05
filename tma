@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "${1}" ]; then
+  tmux a -t "${1}" 2>/dev/null || tmux new -s "${1}"
+else
+  tmux a
+fi
+
