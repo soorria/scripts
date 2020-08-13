@@ -1,8 +1,11 @@
 #!/bin/sh
 
-case $1 in
-  bar)        echo "\e[6 q";;
-  block)      echo "\e[2 q";;
-  underline)  echo "\e[4 q";;
-  *)          echo "Usage: cursor bar|block|underline";;
+case "${1}" in
+  blink_block)      echo -n "\e[1 q";;
+  block)            echo -n "\e[2 q";;
+  blink_underline)  echo -n "\e[3 q";;
+  underline)        echo -n "\e[4 q";;
+  blink_bar)        echo -n "\e[5 q";;
+  bar)              echo -n "\e[6 q";;
+  *)                echo -n "Usage: cursor [blink_](bar|block|underline)";;
 esac

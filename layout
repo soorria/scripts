@@ -12,18 +12,29 @@ cs() {
   tmux select-pane -L
   tmux split-window -v
   tmux select-pan -U
-  echo "Using layout 'cs'"
 }
 
-layouts=( "cs" )
+grid4() {
+  tmux split-window -h
+  tmux split-window -v
+  tmux select-pane -L
+  tmux split-window -v
+  tmux select-pan -U
+}
 
-if [[ "${layouts[@]}" =~ "${1}" ]]; then
-  "${1}" "$@"
-else
-  echo "usage: ${0} LAYOUT"
-  echo "layouts:"
-  for lyt in "${layouts[@]}"; do
-    echo "- ${lyt}"
-  done
-fi
+layouts=( "cs" "grid4" )
+
+for layout in "${layouts}"; do
+  if [[ "${layout}" == "${1}" ]]; then
+    "${1}" "$@"
+    echo "Using layout ${1}"
+    exit
+  fi
+done
+
+echo "usage: ${0} LAYOUT"
+echo "layouts:"
+for lyt in "${layouts[@]}"; do
+  echo "- ${lyt}"
+done
 
