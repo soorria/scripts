@@ -7,5 +7,5 @@ case "${1}" in
   underline)        echo -n "\e[4 q";;
   blink_bar)        echo -n "\e[5 q";;
   bar)              echo -n "\e[6 q";;
-  *)                echo -n "Usage: cursor [blink_](bar|block|underline)";;
+  *)                echo "Usage: cursor [blink_](bar|block|underline)";;
 esac
