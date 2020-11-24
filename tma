@@ -1,7 +1,11 @@
 #!/bin/sh
 
 if [ -n "${1}" ]; then
-  tmux a -t "${1}" 2>/dev/null || tmux new -s "${1}"
+  if [ -z "${TMUX}" ]; then
+    tmux a -t "${1}" 2>/dev/null || tmux new -s "${1}"
+  else
+    tmux switch-client -t "${1}"
+  fi
 else
   tmux a
 fi
