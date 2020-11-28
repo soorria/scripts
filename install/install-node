@@ -1,0 +1,17 @@
+#!/bin/sh
+# Install node and related stuff
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.1/install.sh | bash
+
+source ~/.bashrc
+
+command -v nvm && nvm install 14
+
+source ~/.bashrc
+
+command -v npm && npm install -g yarn
+
+source ~/.bashrc
+
+command -v yarn && yarn global add vercel gitignore lite-server parcel prettier serve surge
+
