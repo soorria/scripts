@@ -1,0 +1,10 @@
+#!/bin/python3
+
+import yaml
+import json
+import sys
+
+try:
+    json.dump(yaml.load(sys.stdin, Loader=yaml.FullLoader), sys.stdout)
+except KeyboardInterrupt:
+    print()

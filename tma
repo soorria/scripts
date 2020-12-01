@@ -7,6 +7,6 @@ if [ -n "${1}" ]; then
     tmux switch-client -t "${1}"
   fi
 else
-  tmux a
+  tmux a || tmux
 fi
 
