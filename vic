@@ -8,8 +8,8 @@
 scriptDir="${HOME}/repos/scripts/"
 
 [ "${1}" = "ls" ] && {
-  find . -type f -not -path './.git/*' | cut -c 3-
-  # ls "$scriptDir"
+  # find $scriptDir -type f -not -path './.git/*' | cut -c 3-
+  ls "$scriptDir"
   exit
 }
 

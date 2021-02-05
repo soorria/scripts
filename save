@@ -1,0 +1,25 @@
+#!/bin/bash
+
+usage() {
+  echo    "usage: save <commit message>"
+  echo -e "  Can only be used in a git repo"
+}
+
+git status &>/dev/null || {
+  usage
+  exit 1
+}
+
+if [ -z "$(git status --porcelain)" ]; then
+  echo "Nothing to commit"
+  exit 0
+fi
+
+echo "Committing these files:"
+git status -s
+
+git pull
+git add --all
+git commit -m "$*"
+git push -u origin HEAD
+
