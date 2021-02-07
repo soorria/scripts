@@ -1,12 +1,19 @@
 #!/bin/sh
 
 if [ -n "${1}" ]; then
+  session="${1}"
+
   if [ -z "${TMUX}" ]; then
-    tmux a -t "${1}" 2>/dev/null || tmux new -s "${1}"
+    # Join existing session, or create a new one
+    tmux a -t "$session" 2>/dev/null || tmux new -s "$session"
   else
-    tmux switch-client -t "${1}"
+    # Create a new detached session
+    tmux new -d -s "$session" 2>/dev/null
+    # Switch to the session
+    tmux switch-client -t "$session"
   fi
 else
+  # Attach to the most recent session, or create a new session
   tmux a || tmux
 fi
 
