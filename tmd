@@ -1,0 +1,20 @@
+#!/bin/sh
+# Delete many tmux sessions at once.
+
+usage() {
+  echo "usage $0 [SESSION NAMES]"
+  exit 1
+}
+
+if [ "$#" = 0 ]; then
+  usage
+fi
+
+for name in "$@"; do
+  if tmux kill-session -t "$name" 2>/dev/null; then
+    echo "$name deleted"
+  else
+    echo "$name doesn't exist"
+  fi
+done
+

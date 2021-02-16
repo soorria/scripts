@@ -1,0 +1,19 @@
+#!/bin/sh
+# Create many tmux sessions at once.
+
+usage() {
+  echo "usage $0 [SESSION NAMES]"
+  exit 1
+}
+
+if [ "$#" = 0 ]; then
+  usage
+fi
+
+for name in "$@"; do
+  if tmux new -d -s "$name" 2>/dev/null; then
+    echo "$name created"
+  else
+    echo "$name already exists"
+  fi
+done

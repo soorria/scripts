@@ -1,4 +1,5 @@
 #!/bin/sh
+# Attach to and switch between tmux sessions
 
 if [ -n "${1}" ]; then
   session="${1}"
@@ -13,7 +14,9 @@ if [ -n "${1}" ]; then
     tmux switch-client -t "$session"
   fi
 else
-  # Attach to the most recent session, or create a new session
-  tmux a || tmux
+  if [ -z "${TMUX}" ]; then
+    # Attach to the most recent session, or create a new session
+    tmux a || tmux
+  fi
 fi
 
