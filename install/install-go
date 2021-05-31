@@ -20,8 +20,10 @@ VERSION=$(latest_version)
 PLATFORM="linux-amd64"
 PACKAGE_NAME="go${VERSION}.${PLATFORM}.tar.gz"
 TMP_DIR=$(mktemp -d)
-PACKAGE_URL="https://goladsflkasdjflkang.org/dl/${PACKAGE_NAME}"
+PACKAGE_URL="https://storage.googleapis.com/golang/$PACKAGE_NAME/${PACKAGE_NAME}"
 DL_PATH="${TMP_DIR}/${PACKAGE_NAME}"
+
+echo $PACKAGE_URL
 
 if [ -d ${INSTALL_DIR} ]; then
   echo_err "The install directory (${INSTALL_DIR}) already exists."
@@ -35,8 +37,11 @@ if [ $? -ne 0 ]; then
   echo_err "Download failed."
 fi
 
-mkdir -p ${INSTALL_DIR}
-tar -C ${INSTALL_DIR} xvf ${DL_PATH}
+echo "Requesting sudo to install"
+
+sudo mkdir -p ${INSTALL_DIR}
+echo $DL_PATH $INSTALL_DIR
+tar -C ${INSTALL_DIR} -xvf ${DL_PATH} || exit 1
 
 echo "Go successfully installed."
 

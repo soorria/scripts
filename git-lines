@@ -1,0 +1,8 @@
+#!/bin/sh
+# Get contributed lines per user. Not very accurate.
+# Copied from https://gist.github.com/amitchhajer/4461043#gistcomment-2349917
+
+git ls-files | while read f; do
+  git blame -w -M -C -C --line-porcelain "$f" | grep -I '^author '
+done | sort -f | uniq -ic | sort -nr
+

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if uname -r | grep -i microsoft >/dev/null; then
+  clip.exe
+else
+  xclip
+fi

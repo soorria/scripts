@@ -1,6 +1,11 @@
 #!/bin/sh
 # Attach to and switch between tmux sessions
 
+if [ "${1}" = "ls" ]; then
+  tmux list-sessions
+  exit
+fi
+
 if [ -n "${1}" ]; then
   session="${1}"
 
