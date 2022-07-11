@@ -1,8 +1,25 @@
 #!/bin/sh
 
-if [ $# = 0 ]; then
-"${EDITOR}" "${HOME}/stuff"
-else
-"${EDITOR}" "${HOME}/stuff-$1"
+filename="${HOME}/stuff"
+mode='edt'
+
+if [ ! $# = 0 ]; then
+  case "$1" in
+    -c) mode='cat' ;;
+    -d) mode='del' ;;
+    -e) mode='edt' ;;
+    *) filename="${HOME}/stuff-$1" ;;
+  esac
+
+  if [ $# = 2 ] && [ -n "$2" ]; then
+    filename="${HOME}/stuff-$2"
+  fi
 fi
 
+case "$mode" in
+  cat) cmd="cat" ;;
+  del) cmd="rm -i" ;;
+  edt) cmd="${EDITOR}" ;;
+esac
+
+$cmd "$filename"
