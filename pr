@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+if [[ -v $DEBUG ]]; then
+  set -x
+fi
+
+set -euo pipefail
+
+echo_usage() {
+  echo "Usage: pr [feature|hotfix|draft|ready|view|help]"
+}
+
+if ! command -v gh &>/dev/null; then
+  echo "Install github cli to continue"
+  echo "https://cli.github.com/"
+  exit 1
+fi;
+
+repo=$(git remote -v | grep origin | grep fetch | cut -d':' -f2 | cut -d'.' -f1)
+
+pr_type="${1:-feature}"
+
+if [[ "$pr_type" = "help" ]]; then
+  echo_usage
+  exit 0
+fi
+
+if [[ $pr_type = "ready" ]]; then
+  gh pr ready
+  exit 0
+fi
+
+if [[ $pr_type = "view" ]]; then
+  gh pr view -w
+  exit 0
+fi
+
+
+if [[ ! "$pr_type" =~ ^(feature|hotfix|draft)$ ]]; then
+  echo_usage
+  exit 1
+fi
+
+declare -A extra_args_map=(
+  ["RelevanceAI/relevance-app"]="-r danieljpalmer"
+)
+
+dev_args="-f --base development"
+prod_args="-f --base main"
+
+extra_args=""
+if [[ -v extra_args_map[$repo] ]]; then
+  extra_args="${extra_args_map[$repo]}"
+fi
+
+if [[ $pr_type = "draft" ]]; then
+  dev_args="$dev_args --draft"
+fi
+
+if [[ "$pr_type" = "hotfix" ]]; then
+  gh pr create $prod_args $extra_args
+  gh pr create $dev_args --draft $extra_args
+else
+  gh pr create $dev_args $extra_args
+fi
+

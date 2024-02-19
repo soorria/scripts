@@ -1,0 +1,3 @@
+#!/bin/bash
+
+nvim -c "set nonumber norelativenumber scl=no" -c "let g:airline#extensions#tabline#enabled = 0" ~/notes
