@@ -43,10 +43,11 @@ fi
 
 declare -A extra_args_map=(
   # ["RelevanceAI/relevance-app"]="-r danieljpalmer"
+  ["RelevanceAI/relevance-api-node"]="-f"
 )
 
-dev_args="-f --base development"
-prod_args="-f --base main"
+dev_args="--base development"
+prod_args="--base main"
 
 extra_args=""
 if [[ -v extra_args_map[$repo] ]]; then
