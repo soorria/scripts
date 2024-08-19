@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+changed_files=$(git status -s)
+if [ -n "$changed_files" ]; then
+  echo "There are changed files, exiting"
+  return 1
+fi
+
+message="empty commit :)"
+
+if [ -n "$1" ]; then
+  message="empty commit for $*"
+fi
+
+gc --no-verify --allow-empty -m "$message"

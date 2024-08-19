@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -xe
+
+git commit "$@"
+
+if command -v lucky_commit &>/dev/null; then
+  lucky_commit 0000000
+fi
