@@ -1,5 +1,24 @@
 #!/bin/sh
 
+# Default editor
+editor="$EDITOR"
+
+# Parse command-line options
+while getopts "c" opt; do
+  case ${opt} in
+    c)
+      editor="code"  # Set editor to 'code' if -c flag is used
+      ;;
+    \?)
+      echo "Usage: ${0##*/} [-c] SCRIPT | ls"
+      exit 1
+      ;;
+  esac
+done
+
+# Shift arguments to get to the script or 'ls'
+shift $((OPTIND - 1))
+
 [ -z "${1}" ] && {
   echo "Usage: ${0##*/} SCRIPT | ls"
   exit 1
@@ -7,11 +26,11 @@
 
 scriptDir="${HOME}/repos/scripts/"
 
-[ "${1}" = "ls" ] && {
+if [ "${1}" = "ls" ]; then
   # find $scriptDir -maxdepth 1 -type f
   ls -p "$scriptDir"
   exit
-}
+fi
 
 file="${scriptDir}${1}"
 
@@ -20,7 +39,7 @@ if [ ! -f "${file}" ]; then
   chmod +x "${file}"
 fi
 
-$EDITOR "${file}"
+$editor "${file}"
 
 if [ ! -s "${file}" ]; then
   rm "${file}" >/dev/null

@@ -36,20 +36,36 @@ if [[ $pr_type = "view" ]]; then
 fi
 
 
-if [[ ! "$pr_type" =~ ^(feature|hotfix-only|hotfix|draft)$ ]]; then
+if [[ ! "$pr_type" =~ ^(feature|hotfix|draft)$ ]]; then
   echo_usage
   exit 1
 fi
 
+declare -A default_base_branch_map=(
+  ["RelevanceAI/relevance-api-node"]="development"
+)
+base_branch="main"
+if [[ -v default_base_branch_map[$repo] ]]; then
+  base_branch="${default_base_branch_map[$repo]}"
+fi
+
+declare -A hotfix_branch_map=(
+  ["RelevanceAI/relevance-api"]="main"
+)
+hotfix_branch="main"
+if [[ -v hotfix_branch_map[$repo] ]]; then
+  hotfix_branch="${hotfix_branch_map[$repo]}"
+fi
+
+
 declare -A extra_args_map=(
-  # ["RelevanceAI/relevance-app"]="-r danieljpalmer"
-  ["RelevanceAI/relevance-api-node"]="-f"
+  ["RelevanceAI/relevance-app"]=""
 )
 
-dev_args="--base development"
-prod_args="--base main"
+dev_args="--base $base_branch"
+prod_args="--base $hotfix_branch"
 
-extra_args=""
+extra_args="-f"
 if [[ -v extra_args_map[$repo] ]]; then
   extra_args="${extra_args_map[$repo]}"
 fi
@@ -58,11 +74,8 @@ if [[ $pr_type = "draft" ]]; then
   dev_args="$dev_args --draft"
 fi
 
-if [[ "$pr_type" = hotfix* ]]; then
+if [[ "$pr_type" = hotfix ]]; then
   gh pr create $prod_args $extra_args
-  if [[ "$pr_type" = "hotfix" ]]; then
-    gh pr create $dev_args --draft $extra_args
-  fi
 else
   gh pr create $dev_args $extra_args
 fi
