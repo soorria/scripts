@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+flags=()
+message_parts=()
+
+# Separate flags from other arguments
+for arg in "$@"; do
+    if [[ "$arg" =~ ^--.*$ ]]; then
+        flags+=("$arg")
+    else
+        message_parts+=("$arg")
+    fi
+done
+
+# Combine message parts into a single string
+message="${message_parts[*]}"
+
+cd "$(resolve-git-path ".")"
+
+
+# Call claude with flags first, then the message string
+claude --dangerously-skip-permissions "${flags[@]}" "$message"

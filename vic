@@ -3,11 +3,16 @@
 # Default editor
 editor="$EDITOR"
 
+visual_editor="code"
+if command -v cursor &>/dev/null; then
+  visual_editor="cursor"
+fi
+
 # Parse command-line options
 while getopts "c" opt; do
   case ${opt} in
     c)
-      editor="code"  # Set editor to 'code' if -c flag is used
+      editor="$visual_editor"
       ;;
     \?)
       echo "Usage: ${0##*/} [-c] SCRIPT | ls"
@@ -44,4 +49,7 @@ $editor "${file}"
 if [ ! -s "${file}" ]; then
   rm "${file}" >/dev/null
 fi
+
+chmod +x "${file}"
+
 

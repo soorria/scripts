@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+staged=$(git diff --staged)
+
+if [ -z "$staged" ]; then
+  git add -A
+fi
+
+gc --no-verify -m wip
+git push
