@@ -19,4 +19,5 @@ cd "$(resolve-git-path ".")"
 
 
 # Call claude with flags first, then the message string
-claude --dangerously-skip-permissions "${flags[@]}" "$message"
+command claude --dangerously-skip-permissions "${flags[@]}" "$message"
+

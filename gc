@@ -2,43 +2,63 @@
 
 set -e
 
+# Check if --amend is in the arguments
+is_amend=false
+for arg in "$@"; do
+  if [[ "$arg" == "--amend" ]]; then
+    is_amend=true
+    break
+  fi
+done
+
+# For amends, capture the current commit's hash prefix BEFORE amending
+amend_prefix=""
+if [[ "$is_amend" == true ]] && command -v lucky_commit &>/dev/null; then
+  amend_prefix=$(git rev-parse HEAD | cut -c1-7)
+fi
+
 git commit "$@"
 
 if command -v lucky_commit &>/dev/null; then
-  # Get the repository name from origin remote
-  origin_url=$(git remote get-url origin 2>/dev/null || echo "")
-  if [[ -n "$origin_url" ]]; then
-    # Extract repo name from URL (handles both SSH and HTTPS)
-    repo_name=$(basename "$origin_url" .git)
+  if [[ "$is_amend" == true ]]; then
+    # Reuse the prefix from the original commit
+    lucky_commit "$amend_prefix"
   else
-    # Fallback to folder name if no origin remote
-    repo_name=$(basename "$(git rev-parse --show-toplevel)")
+    # Get the repository name from origin remote
+    origin_url=$(git remote get-url origin 2>/dev/null || echo "")
+    if [[ -n "$origin_url" ]]; then
+      # Extract repo name from URL (handles both SSH and HTTPS)
+      repo_name=$(basename "$origin_url" .git)
+    else
+      # Fallback to folder name if no origin remote
+      repo_name=$(basename "$(git rev-parse --show-toplevel)")
+    fi
+
+    # Create the lucky_commit directory if it doesn't exist
+    mkdir -p ~/.lucky_commit
+
+    # Path to the counter file for this repo
+    counter_file=~/.lucky_commit/"$repo_name"
+
+    # Read current counter or start at 0000000
+    if [[ -f "$counter_file" ]]; then
+      current_count=$(cat "$counter_file")
+    else
+      current_count="0000000"
+    fi
+
+    # Use current counter for lucky_commit
+    lucky_commit "$current_count"
+
+    # Increment counter (hex arithmetic)
+    next_count=$(printf "%07x" $((0x$current_count + 1)))
+
+    # Handle overflow (wrap back to 0000000 after fffffff)
+    if [[ ${#next_count} -gt 7 ]]; then
+      next_count="0000000"
+    fi
+
+    # Store next counter
+    echo "$next_count" > "$counter_file"
   fi
-
-  # Create the lucky_commit directory if it doesn't exist
-  mkdir -p ~/.lucky_commit
-
-  # Path to the counter file for this repo
-  counter_file=~/.lucky_commit/"$repo_name"
-
-  # Read current counter or start at 0000000
-  if [[ -f "$counter_file" ]]; then
-    current_count=$(cat "$counter_file")
-  else
-    current_count="0000000"
-  fi
-
-  # Use current counter for lucky_commit
-  lucky_commit "$current_count"
-
-  # Increment counter (hex arithmetic)
-  next_count=$(printf "%07x" $((0x$current_count + 1)))
-
-  # Handle overflow (wrap back to 0000000 after fffffff)
-  if [[ ${#next_count} -gt 7 ]]; then
-    next_count="0000000"
-  fi
-
-  # Store next counter
-  echo "$next_count" > "$counter_file"
 fi

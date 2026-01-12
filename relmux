@@ -1,0 +1,83 @@
+#!/bin/sh
+# relmux - Setup Relevance development tmux sessions
+
+REPOS_DIR="$HOME/repos"
+
+# Helper: Create a window with 2 side-by-side panes
+# Args: $1 = session, $2 = window name, $3 = directory
+create_split_window() {
+  session="$1"
+  window="$2"
+  dir="$REPOS_DIR/$3"
+
+  tmux new-window -t "$session:" -n "$window" -c "$dir"
+  tmux split-window -h -c "$dir"
+  tmux select-pane -L
+}
+
+# Helper: Create a simple window (no split)
+# Args: $1 = session, $2 = window name, $3 = directory
+create_window() {
+  session="$1"
+  window="$2"
+  dir="$REPOS_DIR/$3"
+
+  tmux new-window -t "$session:" -n "$window" -c "$dir"
+}
+
+# Helper: Create a session with first window
+# Args: $1 = session name, $2 = window name, $3 = directory, $4 = split (optional, "split" for 2 panes)
+create_session() {
+  session="$1"
+  window="$2"
+  dir="$REPOS_DIR/$3"
+  split="$4"
+
+  tmux new-session -d -s "$session" -n "$window" -c "$dir"
+
+  if [ "$split" = "split" ]; then
+    tmux split-window -t "$session:" -h -c "$dir"
+    tmux select-pane -t "$session:" -L
+  fi
+}
+
+# --- Session: api ---
+# 4 windows with 2 side-by-side panes each
+create_session "api" "api-1" "relevance-api-node" "split"
+create_split_window "api" "api-2" "api-2"
+create_split_window "api" "api-3" "api-3"
+create_split_window "api" "api-4" "api-4"
+
+# --- Session: app ---
+# 1 window
+create_session "app" "relevance-app" "relevance-app"
+
+# --- Session: chat ---
+# 1 window
+create_session "chat" "relevance-chat-app" "relevance-chat-app"
+
+# --- Session: interviews ---
+# 2 windows
+create_session "interviews" "frontend-interview" "frontend-interview"
+create_window "interviews" "interview-poweruser-api" "interview-poweruser-api"
+
+# --- Session: gapi ---
+# 1 window
+create_session "gapi" "relevance-global-api" "relevance-global-api"
+
+# --- Session: misc ---
+# 2 windows
+create_session "misc" "devops-environment-stack" "devops-environment-stack"
+create_window "misc" "devops-genesis" "devops-genesis"
+
+# --- Focus on api session, first window ---
+tmux select-window -t "api:0"
+
+# Attach or switch to api session
+if [ -z "${TMUX}" ]; then
+  tmux attach-session -t "api"
+else
+  tmux switch-client -t "api"
+fi
+
+echo "Relevance tmux sessions created"
