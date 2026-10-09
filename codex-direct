@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Use the saved OpenAI login instead of the configured proxy provider.
+exec codex -c 'model_provider="openai"' "$@"

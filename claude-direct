@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Override proxy settings while keeping the saved Claude login and preferences.
+exec claude --settings '{
+  "apiKeyHelper": "",
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
+    "ANTHROPIC_AUTH_TOKEN": "",
+    "ANTHROPIC_API_KEY": ""
+  }
+}' "$@"
